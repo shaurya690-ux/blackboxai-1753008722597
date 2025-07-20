@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabTrack AI Assistant Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .user-message {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .bot-message {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .input-container {
+            display: flex;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .input-container input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .input-container input:focus {
+            border-color: #667eea;
+        }
+        
+        .input-container button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .input-container button:hover {
+            background: #5a6fd8;
+        }
+        
+        .demo-info {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .demo-info h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .demo-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .demo-info li {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .demo-info li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LabTrack AI Assistant</h1>
+            <p>Your intelligent lab companion for chemical inventory and safety</p>
+        </div>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="message bot-message">
+                Hello! I'm your LabTrack AI Assistant. I can help you with:
+                <br><br>
+                • Experiment setup instructions<br>
+                • Chemical safety information<br>
+                • Finding items in the lab<br>
+                • Checking stock levels<br>
+                • Safety reminders<br>
+                <br>
+                What would you like to know?
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Ask me anything about lab procedures..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        
+        <div class="demo-info">
+            <h3>Demo Features:</h3>
+            <ul>
+                <li>Role-based responses (Student/Teacher/Assistant)</li>
+                <li>Chemical safety information</li>
+                <li>MSDS file access</li>
+                <li>Inventory queries</li>
+                <li>Experiment guidance</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const messageInput = document.getElementById('messageInput');
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.innerHTML = text;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            messageInput.value = '';
+
+            // Simulate API response
+            setTimeout(() => {
+                let response;
+                
+                if (message.toLowerCase().includes('safety') || message.toLowerCase().includes('msds')) {
+                    response = `
+                        <strong>Safety Information Available:</strong><br><br>
+                        For students: Basic safety rules and storage info<br>
+                        For teachers: Complete MSDS and detailed procedures<br><br>
+                        <strong>Example responses:</strong><br>
+                        • "Always wear safety goggles and lab coat"<br>
+                        • "Storage location: Cabinet A, Shelf 2"<br>
+                        • "Danger level: Green (safe for all users)"
+                    `;
+                } else if (message.toLowerCase().includes('experiment')) {
+                    response = `
+                        <strong>Experiment Setup Guidance:</strong><br><br>
+                        I can help you with:<br>
+                        • Step-by-step procedures<br>
+                        • Required materials and equipment<br>
+                        • Safety precautions<br>
+                        • Expected outcomes<br><br>
+                        What specific experiment would you like help with?
+                    `;
+                } else if (message.toLowerCase().includes('stock') || message.toLowerCase().includes('available')) {
+                    response = `
+                        <strong>Inventory Status:</strong><br><br>
+                        • Chemicals expiring soon: 3 items<br>
+                        • Low stock items: 5 chemicals<br>
+                        • Broken equipment: 2 items<br><br>
+                        Would you like details about specific items?
+                    `;
+                } else {
+                    response = `
+                        I'm here to help! You can ask me about:<br>
+                        • Chemical safety and MSDS information<br>
+                        • Experiment procedures<br>
+                        • Finding items in the lab<br>
+                        • Stock levels and inventory<br>
+                        • General lab safety<br><br>
+                        What would you like to know?
+                    `;
+                }
+                
+                addMessage(response);
+            }, 1000);
+        }
+
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
